@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IRANSH LUXE — Scents That Define Luxury</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAAAIADCAAAAFgAAAIlQTkcNChoKAAAADUlIRFIAAAAQAAAAEAgGAAAAH/P/YQAAAIlJREFUeJxjZGBgYDi5wuc/A5mA8eQKn//2CXvI1c/ARLbOQWMACzKnt9qbIdhTl4GBgYGhpG0rg6WhHAp/zbbL+A0obt3KYGEox3Di/COGNdsuM6zZdhmFTxMv0NcAIX5OhrRIcxQxjECUluBnCPbUZTh+/hGDpaEcnA8LzLap+1EMGE2JVDAAACRULIbYmcA4AAAAAElFTkSuQmCC" sizes="any">
 <link rel="icon" type="image/png" sizes="16x16" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAiUlEQVR4nGNkYGBgOLnC5z8DmYDx5Aqf//YJe8jVz8BEts5BYwALMqe32psh2FOXgYGBgaGkbSuDpaEcCn/Ntsv4DShu3cpgYSjHcOL8I4Y12y4zrNl2GYVPEy/Q1wAhfk6GtEhzFDGMQJSW4GcI9tRlOH7+EYOloRycDwvMtqn7UQwYTYlUMAAAJFQshtiZwDgAAAAASUVORK5CYII=">
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA30lEQVR4nGNgGGDAiC5wcoXPf1pbah6xBW4vC7rl9gl7aG0/w8kVPv9hjmCit+UMDAwM9gl74CHNSG/LkcHBBS6IEBgoMOqAUQew4JO0MJRjWDE5CkP85IVHDP1zj+CUC89ZRrQD8IbAifOPGBRsOhhOXngEF4vIXcYQnrMMrxwpYMCjYNQBow4YdQBNHaAsL8xwZlPuwDmAGEByUbxichTOohhb0fzm3VfyHQArbnEBfHLEggGPglEHjDpgcDjAPGIL48EFLnS1+OACFwbziC2M8BCgpyNgljMwDILeMQDPr1vX5VEqiwAAAABJRU5ErkJggg==">
@@ -59,7 +62,8 @@ nav{position:sticky;top:0;z-index:150;background:rgba(8,8,8,.97);border-bottom:1
 .ham-btn{display:none;background:none;border:none;color:var(--cream);cursor:pointer;padding:4px;}
 .nav-brand-center{animation:navBrandDrop 1.1s cubic-bezier(.22,.68,.35,1) both;}
 @keyframes navBrandDrop{0%{transform:translate(-50%,-60px);opacity:0;}70%{transform:translate(-50%,4px);opacity:1;}100%{transform:translate(-50%,0);opacity:1;}}
-@media(max-width:768px){.nav-links{display:none !important;}.ham-btn{display:flex !important;flex-direction:column;align-items:center;justify-content:center;gap:5px;}.search-inp{width:0 !important;padding:0 !important;opacity:0;}.search-icon{display:none;}.nav-logo-text{display:none !important;}}
+@media(max-width:1024px){.nav-links{display:none !important;}.ham-btn{display:flex !important;flex-direction:column;align-items:center;justify-content:center;gap:5px;}.search-inp{width:0 !important;padding:0 !important;opacity:0;}.search-icon{display:none;}.nav-logo-text{display:none !important;}}
+@media(min-width:1025px) and (max-width:1220px){.nav-links{gap:16px !important;}.nav-links a{font-size:9px !important;letter-spacing:1.5px !important;}nav{padding:0 16px !important;}}
 
 /* LOGO SVG */
 .logo-svg-el{filter:drop-shadow(0 0 6px rgba(201,168,76,.25));}
@@ -429,7 +433,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-padding-top:64px
 *{box-sizing:border-box;}
 
 /* ── NAV ── */
-@media(max-width:768px){
+@media(max-width:1024px){
   nav{
     padding:0 14px !important;
     height:64px !important;
@@ -1052,7 +1056,10 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
       <span class="ctlabel">Total</span>
       <span class="ctval" id="ctval">₹0</span>
     </div>
-    <a id="cwa-link" href="#" target="_blank" class="cwa">
+    <input type="tel" id="cPhoneInp" placeholder="📱 WhatsApp number (so we can remind you)" maxlength="13"
+      style="width:100%;background:var(--card2,#1a1a1a);border:1px solid var(--border);color:var(--cream);padding:10px 12px;font-size:12px;margin-bottom:10px;font-family:'Montserrat',sans-serif;"
+      oninput="onCartPhoneInput(this.value)">
+    <a id="cwa-link" href="#" target="_blank" class="cwa" onclick="markCartOrdered()">
       <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.078.534 4.031 1.472 5.731L.057 23.5l5.927-1.399C7.714 23.01 9.817 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.667-.504-5.21-1.388l-.374-.22-3.516.829.858-3.412-.241-.388A9.94 9.94 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
       Order via WhatsApp
     </a>
@@ -1080,7 +1087,7 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
         <span style="font-family:'Cormorant Garamond',serif;font-size:clamp(16px,3vw,22px);color:var(--gold);letter-spacing:5px;text-transform:uppercase;">You May Also Like</span>
         <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--gold),transparent);max-width:80px;"></div>
       </div>
-      <div id="pdRelatedStrip" style="display:flex;overflow-x:auto;gap:18px;padding:8px 4px 26px;scrollbar-width:thin;scrollbar-color:#c9a84c #1a1a1a;-webkit-overflow-scrolling:touch;touch-action:pan-x;overscroll-behavior-x:contain;scroll-snap-type:x proximity;"></div>
+      <div id="pdRelatedStrip" style="display:flex;overflow-x:auto;gap:18px;padding:8px 4px 26px;scrollbar-width:thin;scrollbar-color:#c9a84c #1a1a1a;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;overscroll-behavior-x:contain;scroll-snap-type:x proximity;"></div>
     </div>
 
     <!-- ===== FOOTER (duplicated so it's visible on scroll within the product modal) ===== -->
@@ -1672,8 +1679,8 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
 
   <!-- CENTER: Brand text -->
   <a href="#hero" class="nav-logo nav-brand-center" style="position:absolute;left:50%;transform:translateX(-50%);text-align:center;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:2px;z-index:2;">
-    <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(30px,4.2vw,48px);font-weight:300;letter-spacing:clamp(8px,1.8vw,14px);color:#c9a84c;text-transform:uppercase;line-height:1;white-space:nowrap;text-shadow:0 0 20px rgba(201,168,76,.3);">IRANSH LUXE</span>
-    <span style="font-size:clamp(6px,1vw,8px);letter-spacing:clamp(3px,1vw,6px);color:#8a6a2a;text-transform:uppercase;white-space:nowrap;">✦ Scents That Define Luxury ✦</span>
+    <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(22px,4.2vw,48px);font-weight:300;letter-spacing:clamp(4px,1.8vw,14px);color:#c9a84c;text-transform:uppercase;line-height:1;white-space:nowrap;text-shadow:0 0 20px rgba(201,168,76,.3);">IRANSH LUXE</span>
+    <span style="font-size:clamp(6px,1vw,8px);letter-spacing:clamp(2px,1vw,6px);color:#8a6a2a;text-transform:uppercase;white-space:nowrap;">✦ Scents That Define Luxury ✦</span>
   </a>
 
   <!-- RIGHT icons -->
@@ -1738,7 +1745,7 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
       <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--gold),transparent);max-width:120px;"></div>
     </div>
     <!-- HORIZONTAL SCROLL STRIP -->
-    <div id="allProdStrip" style="display:flex;overflow-x:auto;gap:18px;padding:8px 12px 18px;scrollbar-width:thin;scrollbar-color:#c9a84c #1a1a1a;-webkit-overflow-scrolling:touch;touch-action:pan-x;overscroll-behavior-x:contain;scroll-snap-type:x proximity;"></div>
+    <div id="allProdStrip" style="display:flex;overflow-x:auto;gap:18px;padding:8px 12px 18px;scrollbar-width:thin;scrollbar-color:#c9a84c #1a1a1a;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;overscroll-behavior-x:contain;scroll-snap-type:x proximity;"></div>
     <style>
       #allProdStrip::-webkit-scrollbar{height:4px;}
       #allProdStrip::-webkit-scrollbar-track{background:#111;}
@@ -1833,7 +1840,7 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
 <div class="test-sec">
   <div class="sec-c rv">
     <p class="eyebrow">15,000+ Happy Customers</p>
-    <h2 class="sec-h"><em>Testimonials</em></h2>
+    <h2 class="sec-h"><em>Reviews</em></h2>
     <div class="divider"></div>
   </div>
   <div class="tgrid" id="tgrid"></div>
@@ -2342,6 +2349,60 @@ function syncCart(){
   msg+=`\nTotal: ₹${tot.toLocaleString('en-IN')}`;
   const cwaLink=document.getElementById('cwa-link');
   if(cwaLink){cwaLink.href=waLink(msg);}
+  trackAbandonedCart();
+}
+
+// ===== ABANDONED CART TRACKING (for WhatsApp cart-recovery automation) =====
+let cartTrackTimer=null;
+function onCartPhoneInput(v){
+  v=v.replace(/[^0-9+]/g,'');
+  const inp=document.getElementById('cPhoneInp');
+  if(inp && inp.value!==v) inp.value=v;
+  if(v.length>=10) localStorage.setItem('il_customer_phone', v);
+  trackAbandonedCart();
+}
+function getCartPhone(){
+  const inp=document.getElementById('cPhoneInp');
+  const fromInput=inp?inp.value.trim():'';
+  return fromInput || localStorage.getItem('il_customer_phone') || '';
+}
+function normalizePhone(v){
+  let p=(v||'').replace(/[^0-9]/g,'');
+  if(p.length===10) p='91'+p; // assume India if 10 digits given
+  return p;
+}
+function trackAbandonedCart(){
+  clearTimeout(cartTrackTimer);
+  cartTrackTimer=setTimeout(()=>{
+    if(!window.db) return;
+    const phoneRaw=getCartPhone();
+    const phone=normalizePhone(phoneRaw);
+    if(!phone || phone.length<12) return; // need a usable number to ever remind them
+    try{
+      const docRef=db.collection('abandonedCarts').doc(phone);
+      if(!cart.length){
+        // cart emptied — don't send a "come back" message for nothing left to recover
+        docRef.set({status:'empty', updatedAt: Date.now()}, {merge:true}).catch(()=>{});
+        return;
+      }
+      const tot=cart.reduce((s,i)=>s+i.price*(i.qty||1),0);
+      docRef.set({
+        phone: phone,
+        items: cart.map(i=>({id:i.id,name:i.name,qty:i.qty||1,price:i.price,img:i.img||''})),
+        total: tot,
+        status: 'active',
+        updatedAt: Date.now()
+      }, {merge:true}).catch(e=>console.warn('Abandoned-cart save failed', e));
+    }catch(e){ console.warn('Abandoned-cart tracking error', e); }
+  }, 1200);
+}
+function markCartOrdered(){
+  if(!window.db) return;
+  const phone=normalizePhone(getCartPhone());
+  if(!phone || phone.length<12) return;
+  try{
+    db.collection('abandonedCarts').doc(phone).set({status:'ordered', orderedAt: Date.now()}, {merge:true}).catch(()=>{});
+  }catch(e){}
 }
 function renderCB(){
   const b=document.getElementById('cbody');
@@ -2360,7 +2421,7 @@ function renderCB(){
     <button class="crm" onclick="remC(${i.id})">×</button>
   </div>`).join('');
 }
-function openCart(){document.getElementById('csidebar').classList.add('open');document.getElementById('overlay').classList.add('open');document.body.style.overflow='hidden';renderCB();}
+function openCart(){document.getElementById('csidebar').classList.add('open');document.getElementById('overlay').classList.add('open');document.body.style.overflow='hidden';renderCB();const pInp=document.getElementById('cPhoneInp');if(pInp&&!pInp.value){const saved=localStorage.getItem('il_customer_phone');if(saved)pInp.value=saved;}}
 function closeCart(){document.getElementById('csidebar').classList.remove('open');document.getElementById('overlay').classList.remove('open');document.body.style.overflow='';}
 
 // ===== SEARCH =====
@@ -3207,6 +3268,13 @@ document.addEventListener('DOMContentLoaded',function(){
       renderP(typeof af!=='undefined'?af:'all');
       buildAllProdStrip();
       if(typeof renderAdminLists==='function') renderAdminLists();
+      // Keep an already-open product modal in sync with the latest cloud data
+      // (fixes specs/reviews sometimes missing on slower/mobile connections,
+      // where the modal opened before the full product data had arrived).
+      if(pdProduct){
+        const fresh = products.find(x=>x.id===pdProduct.id);
+        if(fresh){ pdProduct = fresh; if(typeof renderPdInfo==='function') renderPdInfo(); }
+      }
     }
   });
   fsListenCollection('reviews', function(items){
