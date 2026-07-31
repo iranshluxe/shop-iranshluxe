@@ -1106,7 +1106,8 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
             <li><a href="javascript:void(0)" onclick="closeProductModal();document.getElementById('collection').scrollIntoView({behavior:'smooth'});">All Candles</a></li>
             <li><a href="javascript:void(0)" onclick="closeProductModal();document.getElementById('collection').scrollIntoView({behavior:'smooth'});">Aroma Diffusers</a></li>
             <li><a href="javascript:void(0)" onclick="closeProductModal();document.getElementById('collection').scrollIntoView({behavior:'smooth'});">Aroma Sachets</a></li>
-            <li><a href="javascript:void(0)" onclick="closeProductModal();document.getElementById('seasonal').scrollIntoView({behavior:'smooth'});">Seasonal Specials</a></li>
+            <li><a href="festival.html" target="_blank" rel="noopener">Festival Collection</a></li>
+            <li><a href="jewelry.html" target="_blank" rel="noopener">Artificial Jewelry</a></li>
             <li><a href="javascript:void(0)" onclick="closeProductModal();document.getElementById('custom').scrollIntoView({behavior:'smooth'});">Custom Orders</a></li>
           </ul>
         </div>
@@ -1161,7 +1162,8 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
 <div class="mmenu" id="mmenu">
   <button class="mclose" onclick="closeMob()" style="position:absolute;top:20px;right:20px;background:none;border:1px solid rgba(201,168,76,.3);color:#c9a84c;width:40px;height:40px;font-size:20px;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;">×</button>
   <a href="#collection" onclick="closeMob()">Collection</a>
-  <a href="#seasonal" onclick="closeMob()">Seasonal</a>
+  <a href="festival.html" target="_blank" rel="noopener">Festival Collection</a>
+  <a href="jewelry.html" target="_blank" rel="noopener">Jewelry</a>
   <a href="#custom" onclick="closeMob()">Custom Orders</a>
   <a href="#about" onclick="closeMob()">About</a>
 </div>
@@ -1205,6 +1207,7 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
           <button class="atab" onclick="switchAtab('banners',this)">Hero Banners</button>
           <button class="atab" onclick="switchAtab('candles',this)">Candle Showcase</button>
           <button class="atab" onclick="switchAtab('festivals',this)">Festivals</button>
+          <button class="atab" onclick="switchAtab('jewelry',this)">Jewelry</button>
           <button class="atab" onclick="switchAtab('subscribers',this)">WhatsApp Subscribers</button>
           <button class="atab" onclick="switchAtab('social',this)">Social Media</button>
         </div>
@@ -1611,6 +1614,74 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
         </div>
         <!-- ═══ END FESTIVALS TAB ═══ -->
 
+        <!-- ═══ JEWELRY TAB ═══ -->
+        <div class="admin-section" id="at-jewelry">
+          <p style="font-size:9px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;font-family:'Montserrat',sans-serif;">Artificial Jewelry Manager</p>
+          <p style="font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:18px;">Add, edit or delete pieces shown on the separate Artificial Jewelry page (Rings, Earrings, Bangles, Necklaces, Sets, Bracelets). Changes appear on jewelry.html for every visitor.</p>
+
+          <p class="af-label" style="font-size:11px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;">Add New Piece</p>
+          <div class="af-row">
+            <div class="af-group">
+              <label class="af-label">Item Name</label>
+              <input class="af-input" id="jw-name" placeholder="e.g. Kundan Floral Ring">
+            </div>
+            <div class="af-group">
+              <label class="af-label">Category</label>
+              <select class="af-select" id="jw-cat">
+                <option value="Rings">Rings</option>
+                <option value="Earrings">Earrings</option>
+                <option value="Bangles">Bangles</option>
+                <option value="Necklaces">Necklaces</option>
+                <option value="Sets">Sets</option>
+                <option value="Bracelets">Bracelets</option>
+              </select>
+            </div>
+          </div>
+          <div class="af-row">
+            <div class="af-group">
+              <label class="af-label">Price (₹)</label>
+              <input class="af-input" id="jw-price" type="number" placeholder="799">
+            </div>
+            <div class="af-group">
+              <label class="af-label">Original Price (₹) — optional</label>
+              <input class="af-input" id="jw-old" type="number" placeholder="999">
+            </div>
+          </div>
+          <div class="af-group">
+            <label class="af-label">Description</label>
+            <input class="af-input" id="jw-desc" placeholder="e.g. Handcrafted with cubic zirconia, skin-friendly finish">
+          </div>
+          <div class="af-row">
+            <div class="af-group">
+              <label class="af-label">Badge (optional)</label>
+              <select class="af-select" id="jw-badge">
+                <option value="">None</option>
+                <option value="best">Bestseller</option>
+                <option value="newb">New Arrival</option>
+                <option value="sale">Sale</option>
+                <option value="ltd">Limited</option>
+              </select>
+            </div>
+            <div class="af-group">
+              <label class="af-label">Material / Details — optional</label>
+              <input class="af-input" id="jw-material" placeholder="e.g. Gold-plated brass">
+            </div>
+          </div>
+          <div class="af-group">
+            <label class="af-label">Product Image</label>
+            <div class="af-img-multi" id="jw-img-multi"></div>
+            <input type="file" accept="image/*" id="jw-imgfile" onchange="handleJwImgUpload(this)" style="display:none;">
+            <p style="font-size:9px;color:var(--muted);letter-spacing:1px;">JPG, PNG, WEBP supported · Click the slot to add an image</p>
+          </div>
+          <button class="admin-submit" onclick="jwAddNew()" id="jw-submit-btn">+ Add Jewelry Piece</button>
+
+          <div style="margin-top:22px;border-top:1px solid var(--border2);padding-top:18px;">
+            <p class="af-label" style="margin-bottom:12px;">Existing Jewelry Items</p>
+            <div class="ep-list" id="jw-list"></div>
+          </div>
+        </div>
+        <!-- ═══ END JEWELRY TAB ═══ -->
+
         <!-- ═══ WHATSAPP SUBSCRIBERS TAB ═══ -->
         <div class="admin-section" id="at-subscribers">
           <p class="af-label" style="color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;font-size:11px;">WhatsApp Subscribers</p>
@@ -1672,7 +1743,8 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
   <!-- LEFT LINKS (desktop) -->
   <ul class="nav-links" style="flex:1;">
     <li><a href="#collection">Collection</a></li>
-    <li><a href="#seasonal">Seasonal</a></li>
+    <li><a href="festival.html" target="_blank" rel="noopener">Festival Collection</a></li>
+    <li><a href="jewelry.html" target="_blank" rel="noopener">Jewelry</a></li>
     <li><a href="#custom">Custom</a></li>
     <li><a href="#about">About</a></li>
   </ul>
@@ -1760,16 +1832,6 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
       @media(max-width:600px){.strip-card{flex:0 0 160px;}.strip-card .sc-img{height:130px;}}
     </style>
   </div>
-</section>
-
-<!-- SEASONAL -->
-<section class="sec" id="seasonal" style="background:var(--black);padding-top:60px;padding-bottom:20px;">
-  <div class="sec-c rv" style="margin-bottom:40px;">
-    <p class="eyebrow">Seasonal Specials</p>
-    <h2 class="sec-h">Festive <em>Collections</em></h2>
-  </div>
-  <div id="seasonalMainWrap"></div>
-  <div class="small-scards rv" id="seasonalSmallWrap"></div>
 </section>
 
 <!-- CUSTOM -->
@@ -1882,7 +1944,8 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
         <li><a href="#collection">All Candles</a></li>
         <li><a href="#collection">Aroma Diffusers</a></li>
         <li><a href="#collection">Aroma Sachets</a></li>
-        <li><a href="#seasonal">Seasonal Specials</a></li>
+        <li><a href="festival.html" target="_blank" rel="noopener">Seasonal Specials</a></li>
+        <li><a href="jewelry.html" target="_blank" rel="noopener">Artificial Jewelry</a></li>
         <li><a href="#custom">Custom Orders</a></li>
       </ul>
     </div>
@@ -2541,6 +2604,11 @@ function switchAtab(name,btn){
   if(name==='festivals'){
     setTimeout(function(){
       if(typeof fstInit==='function') fstInit();
+    }, 60);
+  }
+  if(name==='jewelry'){
+    setTimeout(function(){
+      if(typeof jwInit==='function') jwInit();
     }, 60);
   }
   if(name==='candles'){
@@ -4432,4 +4500,153 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 
 })();
+</script>
+
+<!-- ═══ ARTIFICIAL JEWELRY MANAGER (admin CRUD, synced to Firestore 'jewelry' collection) ═══ -->
+<script>
+var JW_KEY = 'iransh_jewelry_v1';
+var jewelryItems = [];
+var jwNextId = 1;
+var jwEditingId = null;
+var jwImages = [];
+
+function jwLoad(){
+  try{
+    var s = localStorage.getItem(JW_KEY);
+    if(s){ var p = JSON.parse(s); if(p && p.length){ jewelryItems = p; jwNextId = Math.max.apply(null, jewelryItems.map(function(x){return x.id;})) + 1; return; } }
+  }catch(e){}
+  jewelryItems = [];
+}
+function jwSaveLocal(){
+  try{ localStorage.setItem(JW_KEY, JSON.stringify(jewelryItems)); }catch(e){}
+}
+function jwPersist(){
+  jwSaveLocal();
+  if(typeof fsSyncCollection==='function') fsSyncCollection('jewelry', jewelryItems, 'id');
+}
+
+function renderJwImgMulti(){
+  var c = document.getElementById('jw-img-multi');
+  if(!c) return;
+  var html = jwImages.map(function(src,i){
+    return '<div class="af-img-slot"><img src="'+src+'" alt="img"><button type="button" class="af-img-rm" onclick="jwRemoveImg('+i+')">×</button></div>';
+  }).join('');
+  if(jwImages.length < 1) html += '<div class="af-img-add-slot" onclick="jwAddImgClick()">+</div>';
+  c.innerHTML = html;
+}
+function jwAddImgClick(){ var f=document.getElementById('jw-imgfile'); if(f) f.click(); }
+function jwRemoveImg(i){ jwImages.splice(i,1); renderJwImgMulti(); }
+function handleJwImgUpload(input){
+  var file = input.files[0];
+  if(!file) return;
+  if(jwImages.length >= 1){ if(typeof toast==='function') toast('Only 1 image per piece here — remove it first to replace.'); input.value=''; return; }
+  compressImage(file, 800, 800, 0.82, function(data){
+    jwImages = [data];
+    renderJwImgMulti();
+    input.value = '';
+  });
+}
+
+function jwAddNew(){
+  var name = (document.getElementById('jw-name')||{}).value.trim();
+  var cat = (document.getElementById('jw-cat')||{}).value;
+  var price = parseInt((document.getElementById('jw-price')||{}).value);
+  var old = parseInt((document.getElementById('jw-old')||{}).value) || price;
+  var desc = (document.getElementById('jw-desc')||{}).value.trim();
+  var badge = (document.getElementById('jw-badge')||{}).value || null;
+  var material = (document.getElementById('jw-material')||{}).value.trim();
+  if(!name || !price){ if(typeof toast==='function') toast('Please fill in name and price'); return; }
+
+  if(jwEditingId!==null){
+    var it = jewelryItems.find(function(x){ return x.id===jwEditingId; });
+    if(it){
+      it.name=name; it.cat=cat; it.price=price; it.old=old; it.desc=desc; it.badge=badge; it.material=material;
+      if(jwImages[0]) it.img = jwImages[0];
+    }
+    jwEditingId = null;
+    var btn = document.getElementById('jw-submit-btn'); if(btn) btn.textContent = '+ Add Jewelry Piece';
+    if(typeof toast==='function') toast('Jewelry piece updated: '+name);
+  } else {
+    var item = { id: jwNextId++, name: name, cat: cat, price: price, old: old, desc: desc, badge: badge, material: material, img: jwImages[0] || '' };
+    jewelryItems.push(item);
+    if(typeof toast==='function') toast('Jewelry piece added: '+name);
+  }
+
+  jwPersist();
+  jwRenderList();
+  ['jw-name','jw-price','jw-old','jw-desc','jw-material'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  var catEl=document.getElementById('jw-cat'); if(catEl) catEl.selectedIndex=0;
+  var badgeEl=document.getElementById('jw-badge'); if(badgeEl) badgeEl.selectedIndex=0;
+  jwImages = [];
+  renderJwImgMulti();
+  var fileEl=document.getElementById('jw-imgfile'); if(fileEl) fileEl.value='';
+}
+
+function jwEdit(id){
+  var it = jewelryItems.find(function(x){ return x.id===id; });
+  if(!it) return;
+  jwEditingId = id;
+  document.getElementById('jw-name').value = it.name||'';
+  document.getElementById('jw-cat').value = it.cat||'Rings';
+  document.getElementById('jw-price').value = it.price||'';
+  document.getElementById('jw-old').value = it.old||'';
+  document.getElementById('jw-desc').value = it.desc||'';
+  document.getElementById('jw-badge').value = it.badge||'';
+  document.getElementById('jw-material').value = it.material||'';
+  jwImages = it.img ? [it.img] : [];
+  renderJwImgMulti();
+  var btn = document.getElementById('jw-submit-btn'); if(btn) btn.textContent = 'Save Changes';
+  var section = document.getElementById('at-jewelry'); if(section) section.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function jwDelete(id){
+  var it = jewelryItems.find(function(x){ return x.id===id; });
+  if(!it) return;
+  if(!confirm('Delete "'+it.name+'"?')) return;
+  jewelryItems = jewelryItems.filter(function(x){ return x.id!==id; });
+  jwPersist();
+  jwRenderList();
+  if(jwEditingId===id){
+    jwEditingId = null;
+    var btn = document.getElementById('jw-submit-btn'); if(btn) btn.textContent = '+ Add Jewelry Piece';
+  }
+  if(typeof toast==='function') toast('Deleted: '+it.name);
+}
+
+function jwRenderList(){
+  var c = document.getElementById('jw-list');
+  if(!c) return;
+  if(!jewelryItems.length){ c.innerHTML = '<p style="font-size:11px;color:var(--muted);">No jewelry pieces added yet.</p>'; return; }
+  c.innerHTML = jewelryItems.map(function(it){
+    return '<div class="ep-row" style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border2);">' +
+      '<div style="width:44px;height:44px;flex-shrink:0;background:var(--card2) center/cover no-repeat;'+(it.img?'background-image:url(\''+it.img+'\')':'')+';display:flex;align-items:center;justify-content:center;font-size:18px;">'+(it.img?'':'jewel')+'</div>' +
+      '<div style="flex:1;min-width:0;">' +
+        '<div style="font-size:12px;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+it.name+'</div>' +
+        '<div style="font-size:10px;color:var(--muted);">'+it.cat+' - Rs '+it.price+'</div>' +
+      '</div>' +
+      '<button onclick="jwEdit('+it.id+')" style="background:none;border:1px solid var(--border);color:var(--gold);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:7px 12px;cursor:pointer;">Edit</button>' +
+      '<button onclick="jwDelete('+it.id+')" style="background:none;border:1px solid rgba(200,50,50,.3);color:#c44;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:7px 12px;cursor:pointer;">Delete</button>' +
+    '</div>';
+  }).join('');
+}
+
+function jwInit(){
+  jwLoad();
+  jwRenderList();
+  renderJwImgMulti();
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  jwLoad();
+  if(typeof fsListenCollection==='function'){
+    fsListenCollection('jewelry', function(items){
+      if(items && items.length){
+        jewelryItems = items;
+        jwNextId = Math.max.apply(null, jewelryItems.map(function(x){return x.id;})) + 1;
+        jwSaveLocal();
+        if(document.getElementById('at-jewelry') && document.getElementById('at-jewelry').classList.contains('active')) jwRenderList();
+      }
+    });
+  }
+});
 </script>

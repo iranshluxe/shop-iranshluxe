@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Festival Collection — IRANSH LUXE</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0a0a0a;--deep:#111;--card:#161616;--card2:#1c1c1c;--gold:#c9a84c;--cream:#f2ede3;--muted:#8a8a8a;--border:#2a2a2a;--border2:#242424;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--black);color:var(--cream);font-family:'Montserrat',sans-serif;}
+a{color:inherit;}
+.topbar{position:sticky;top:0;z-index:50;background:var(--black);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;}
+.tb-logo{font-family:'Cormorant Garamond',serif;font-size:24px;letter-spacing:5px;color:var(--gold);text-decoration:none;text-transform:uppercase;}
+.tb-back{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--cream);opacity:.75;text-decoration:none;border:1px solid var(--border);padding:9px 16px;transition:.3s;}
+.tb-back:hover{opacity:1;border-color:var(--gold);color:var(--gold);}
+.hero{text-align:center;padding:60px 20px 30px;}
+.hero .eyebrow{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.hero h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,5vw,56px);}
+.hero h1 em{font-style:italic;color:var(--gold);}
+.hero p{max-width:520px;margin:16px auto 0;font-size:13px;line-height:1.8;color:var(--muted);}
+.jump{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:24px 20px 10px;}
+.jump a{font-size:10px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);padding:9px 18px;text-decoration:none;color:var(--cream);opacity:.8;transition:.3s;}
+.jump a:hover{opacity:1;border-color:var(--gold);color:var(--gold);}
+.fsec{max-width:1180px;margin:0 auto;padding:50px 20px;scroll-margin-top:80px;border-bottom:1px solid var(--border2);}
+.fsec:last-child{border-bottom:none;}
+.fsec-head{display:flex;align-items:center;gap:18px;margin-bottom:28px;}
+.fsec-emoji{font-size:38px;}
+.fsec-title{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:400;}
+.fsec-tag{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);}
+.fsec-desc{font-size:13px;line-height:1.85;color:var(--muted);max-width:700px;margin-bottom:30px;}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;}
+.fcard{background:var(--card);border:1px solid var(--border2);display:flex;flex-direction:column;}
+.fcard-img{aspect-ratio:1;background:var(--card2) center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-size:34px;}
+.fcard-body{padding:16px 18px;flex:1;display:flex;flex-direction:column;}
+.fcard-name{font-family:'Cormorant Garamond',serif;font-size:19px;margin-bottom:6px;}
+.fcard-price{font-size:14px;color:var(--gold);margin-bottom:12px;}
+.fcard-price s{color:var(--muted);font-size:11px;margin-left:6px;}
+.fcard-buy{margin-top:auto;display:block;text-align:center;padding:11px;background:linear-gradient(135deg,#c9a84c,#a07828);color:#0a0a0a;font-size:10px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;font-weight:600;}
+.empty{text-align:center;padding:80px 20px;color:var(--muted);font-size:13px;}
+footer{text-align:center;padding:40px 20px;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;border-top:1px solid var(--border);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="tb-logo">IRANSH LUXE</a>
+  <a href="index.html" class="tb-back">← Back to Shop</a>
+</div>
+
+<div class="hero">
+  <div class="eyebrow">✦ Festive Collections ✦</div>
+  <h1>Celebrate Every <em>Occasion</em></h1>
+  <p>Handcrafted candles for every festival — Diwali, Holi, Christmas and more. Explore our full collection below.</p>
+</div>
+
+<div class="jump" id="jumpNav"></div>
+
+<div id="festWrap"></div>
+<div class="empty" id="emptyMsg" style="display:none;">No festival collections available right now. Please check back soon!</div>
+
+<footer>✦ IRANSH LUXE — Scents That Define Luxury ✦</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDb3N9UUR42US3AgwUKVgTVqGD_on3yBr0",
+  authDomain: "iransh-luxe.firebaseapp.com",
+  projectId: "iransh-luxe",
+  storageBucket: "iransh-luxe.firebasestorage.app",
+  messagingSenderId: "976343255823",
+  appId: "1:976343255823:web:962e9eaa8cf838ed008c7a",
+  measurementId: "G-NEPG9BNGM5"
+};
+let db=null;
+try{ firebase.initializeApp(firebaseConfig); db=firebase.firestore(); }catch(e){ console.warn('Cloud unavailable', e); }
+
+const WA='917982221656';
+const waLink=t=>`https://wa.me/${WA}?text=${encodeURIComponent(t)}`;
+
+const FST_KEY='iransh_festivals_v1';
+function slug(s){ return (s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+
+function render(festivals){
+  const wrap=document.getElementById('festWrap');
+  const jump=document.getElementById('jumpNav');
+  const empty=document.getElementById('emptyMsg');
+  if(!festivals || !festivals.length){ wrap.innerHTML=''; jump.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+
+  jump.innerHTML = festivals.map(f=>`<a href="#${slug(f.title)}">${f.emoji||'✦'} ${f.title}</a>`).join('');
+
+  wrap.innerHTML = festivals.map(f=>{
+    const specials=(f.specials||[]);
+    const cards = specials.length ? specials.map(s=>`
+      <div class="fcard">
+        <div class="fcard-img" style="${s.img?`background-image:url('${s.img}')`:''}">${s.img?'':'🕯️'}</div>
+        <div class="fcard-body">
+          <div class="fcard-name">${s.name||'Special Candle'}</div>
+          <div class="fcard-price">₹${s.price||''}${s.oldPrice?`<s>₹${s.oldPrice}</s>`:''}</div>
+          <a class="fcard-buy" target="_blank" rel="noopener" href="${waLink(`Hello IRANSH LUXE! I'm interested in ${s.name} from the ${f.title} Collection.`)}">Order via WhatsApp</a>
+        </div>
+      </div>
+    `).join('') : `<div class="empty" style="grid-column:1/-1;padding:30px;">More ${f.title} pieces coming soon.</div>`;
+
+    return `
+    <section class="fsec" id="${slug(f.title)}">
+      <div class="fsec-head">
+        <div class="fsec-emoji">${f.emoji||'✦'}</div>
+        <div>
+          <div class="fsec-tag">${f.tag||''}</div>
+          <div class="fsec-title">${f.title}</div>
+        </div>
+      </div>
+      <p class="fsec-desc">${f.desc||''}</p>
+      <div class="fgrid">${cards}</div>
+    </section>`;
+  }).join('');
+}
+
+// Try cloud first (live), fall back to localStorage snapshot, else empty.
+if(db){
+  db.collection('meta').doc('festivals').onSnapshot(doc=>{
+    if(doc.exists && doc.data().list){ render(doc.data().list); }
+    else{
+      try{ const s=localStorage.getItem(FST_KEY); render(s?JSON.parse(s):[]); }
+      catch(e){ render([]); }
+    }
+  }, err=>{
+    console.warn('Festival cloud read failed, using local fallback', err);
+    try{ const s=localStorage.getItem(FST_KEY); render(s?JSON.parse(s):[]); }
+    catch(e){ render([]); }
+  });
+}else{
+  try{ const s=localStorage.getItem(FST_KEY); render(s?JSON.parse(s):[]); }
+  catch(e){ render([]); }
+}
+</script>
+</body>
+</html>

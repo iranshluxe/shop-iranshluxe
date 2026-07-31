@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artificial Jewelry — IRANSH LUXE</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0a0a0a;--deep:#111;--card:#161616;--card2:#1c1c1c;--gold:#c9a84c;--cream:#f2ede3;--muted:#8a8a8a;--border:#2a2a2a;--border2:#242424;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--black);color:var(--cream);font-family:'Montserrat',sans-serif;}
+a{color:inherit;}
+.topbar{position:sticky;top:0;z-index:50;background:var(--black);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;}
+.tb-logo{font-family:'Cormorant Garamond',serif;font-size:24px;letter-spacing:5px;color:var(--gold);text-decoration:none;text-transform:uppercase;}
+.tb-back{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--cream);opacity:.75;text-decoration:none;border:1px solid var(--border);padding:9px 16px;transition:.3s;}
+.tb-back:hover{opacity:1;border-color:var(--gold);color:var(--gold);}
+.hero{text-align:center;padding:60px 20px 30px;}
+.hero .eyebrow{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.hero h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,5vw,56px);}
+.hero h1 em{font-style:italic;color:var(--gold);}
+.hero p{max-width:520px;margin:16px auto 0;font-size:13px;line-height:1.8;color:var(--muted);}
+
+.cats{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:10px 20px 40px;}
+.cat-btn{font-size:10px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);padding:10px 22px;background:none;color:var(--cream);opacity:.75;cursor:pointer;transition:.3s;font-family:'Montserrat',sans-serif;}
+.cat-btn:hover{opacity:1;}
+.cat-btn.active{opacity:1;background:var(--gold);color:#0a0a0a;border-color:var(--gold);font-weight:600;}
+
+.grid-wrap{max-width:1180px;margin:0 auto;padding:0 20px 70px;}
+.jgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:22px;}
+.jcard{background:var(--card);border:1px solid var(--border2);cursor:pointer;transition:.3s;display:flex;flex-direction:column;position:relative;}
+.jcard:hover{border-color:var(--gold);transform:translateY(-3px);}
+.jcard-badge{position:absolute;top:10px;left:10px;background:var(--gold);color:#0a0a0a;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 9px;font-weight:600;z-index:2;}
+.jcard-img{aspect-ratio:1;background:var(--card2) center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-size:34px;}
+.jcard-body{padding:16px 18px;flex:1;display:flex;flex-direction:column;}
+.jcard-cat{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.jcard-name{font-family:'Cormorant Garamond',serif;font-size:19px;margin-bottom:8px;line-height:1.3;}
+.jcard-price{font-size:14px;color:var(--gold);margin-top:auto;}
+.jcard-price s{color:var(--muted);font-size:11px;margin-left:6px;}
+
+.empty{text-align:center;padding:80px 20px;color:var(--muted);font-size:13px;}
+footer{text-align:center;padding:40px 20px;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;border-top:1px solid var(--border);}
+
+/* Detail modal */
+.jd-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;}
+.jd-overlay.open{display:flex;}
+.jd-modal{background:var(--card);max-width:640px;width:100%;max-height:88vh;overflow-y:auto;position:relative;}
+.jd-close{position:absolute;top:14px;right:14px;background:rgba(0,0,0,.5);border:1px solid var(--border);color:var(--cream);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:18px;z-index:3;}
+.jd-img{aspect-ratio:1.2;background:var(--card2) center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-size:50px;}
+.jd-body{padding:28px 30px;}
+.jd-cat{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.jd-name{font-family:'Cormorant Garamond',serif;font-size:28px;margin-bottom:10px;}
+.jd-price{font-size:20px;color:var(--gold);margin-bottom:16px;}
+.jd-price s{color:var(--muted);font-size:14px;margin-left:8px;}
+.jd-desc{font-size:12px;line-height:1.85;color:var(--muted);margin-bottom:10px;}
+.jd-material{font-size:11px;color:var(--cream);opacity:.8;margin-bottom:22px;}
+.jd-buy{display:block;text-align:center;padding:14px;background:linear-gradient(135deg,#c9a84c,#a07828);color:#0a0a0a;font-size:11px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;font-weight:600;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="tb-logo">IRANSH LUXE</a>
+  <a href="index.html" class="tb-back">← Back to Shop</a>
+</div>
+
+<div class="hero">
+  <div class="eyebrow">✦ Artificial Jewelry ✦</div>
+  <h1>Adorn Yourself in <em>Elegance</em></h1>
+  <p>Handpicked artificial jewelry — rings, earrings, bangles, necklaces and more. Lightweight, skin-friendly, and made to shine.</p>
+</div>
+
+<div class="cats" id="catBar"></div>
+
+<div class="grid-wrap">
+  <div class="jgrid" id="jgrid"></div>
+  <div class="empty" id="emptyMsg" style="display:none;">No jewelry pieces available in this category right now.</div>
+</div>
+
+<footer>✦ IRANSH LUXE — Scents That Define Luxury ✦</footer>
+
+<!-- DETAIL MODAL -->
+<div class="jd-overlay" id="jdOverlay" onclick="if(event.target===this)closeJd()">
+  <div class="jd-modal">
+    <button class="jd-close" onclick="closeJd()">×</button>
+    <div id="jdContent"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDb3N9UUR42US3AgwUKVgTVqGD_on3yBr0",
+  authDomain: "iransh-luxe.firebaseapp.com",
+  projectId: "iransh-luxe",
+  storageBucket: "iransh-luxe.firebasestorage.app",
+  messagingSenderId: "976343255823",
+  appId: "1:976343255823:web:962e9eaa8cf838ed008c7a",
+  measurementId: "G-NEPG9BNGM5"
+};
+let db=null;
+try{ firebase.initializeApp(firebaseConfig); db=firebase.firestore(); }catch(e){ console.warn('Cloud unavailable', e); }
+
+const WA='917982221656';
+const waLink=t=>`https://wa.me/${WA}?text=${encodeURIComponent(t)}`;
+
+const JW_KEY='iransh_jewelry_v1';
+const CATS=['All','Rings','Earrings','Bangles','Necklaces','Sets','Bracelets'];
+let allItems=[];
+let activeCat='All';
+
+const BADGE_LABEL={best:'Bestseller',newb:'New',sale:'Sale',ltd:'Limited'};
+
+function renderCats(){
+  document.getElementById('catBar').innerHTML = CATS.map(c=>
+    `<button class="cat-btn ${c===activeCat?'active':''}" onclick="setCat('${c}')">${c}</button>`
+  ).join('');
+}
+function setCat(c){ activeCat=c; renderCats(); renderGrid(); }
+
+function renderGrid(){
+  const grid=document.getElementById('jgrid');
+  const empty=document.getElementById('emptyMsg');
+  const items = activeCat==='All' ? allItems : allItems.filter(i=>i.cat===activeCat);
+  if(!items.length){ grid.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+  grid.innerHTML = items.map(it=>`
+    <div class="jcard" onclick="openJd(${it.id})">
+      ${it.badge && BADGE_LABEL[it.badge] ? `<div class="jcard-badge">${BADGE_LABEL[it.badge]}</div>` : ''}
+      <div class="jcard-img" style="${it.img?`background-image:url('${it.img}')`:''}">${it.img?'':'✦'}</div>
+      <div class="jcard-body">
+        <div class="jcard-cat">${it.cat}</div>
+        <div class="jcard-name">${it.name}</div>
+        <div class="jcard-price">₹${it.price}${it.old && it.old>it.price ? `<s>₹${it.old}</s>` : ''}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openJd(id){
+  const it = allItems.find(x=>x.id===id);
+  if(!it) return;
+  document.getElementById('jdContent').innerHTML = `
+    <div class="jd-img" style="${it.img?`background-image:url('${it.img}')`:''}">${it.img?'':'✦'}</div>
+    <div class="jd-body">
+      <div class="jd-cat">${it.cat}</div>
+      <div class="jd-name">${it.name}</div>
+      <div class="jd-price">₹${it.price}${it.old && it.old>it.price ? `<s>₹${it.old}</s>` : ''}</div>
+      ${it.desc ? `<div class="jd-desc">${it.desc}</div>` : ''}
+      ${it.material ? `<div class="jd-material">✦ ${it.material}</div>` : ''}
+      <a class="jd-buy" target="_blank" rel="noopener" href="${waLink(`Hello IRANSH LUXE! I'm interested in ${it.name} (${it.cat}) — ₹${it.price}.`)}">⚡ Order via WhatsApp</a>
+    </div>
+  `;
+  document.getElementById('jdOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeJd(){
+  document.getElementById('jdOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function loadLocalFallback(){
+  try{ const s=localStorage.getItem(JW_KEY); return s?JSON.parse(s):[]; }
+  catch(e){ return []; }
+}
+
+renderCats();
+
+if(db){
+  db.collection('jewelry').onSnapshot(snap=>{
+    const items = snap.docs.map(d=>d.data());
+    allItems = items.length ? items : loadLocalFallback();
+    renderGrid();
+  }, err=>{
+    console.warn('Jewelry cloud read failed, using local fallback', err);
+    allItems = loadLocalFallback();
+    renderGrid();
+  });
+}else{
+  allItems = loadLocalFallback();
+  renderGrid();
+}
+</script>
+</body>
+</html>
