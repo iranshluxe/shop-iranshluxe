@@ -114,6 +114,21 @@ nav{position:sticky;top:0;z-index:150;background:rgba(8,8,8,.97);border-bottom:1
 @keyframes tiSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 .ti-label{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:500;}
 
+/* PRODUCT REELS (video ads) */
+.reels-sec{background:var(--black);padding:64px 0 68px;border-bottom:1px solid var(--border2);}
+.reels-sec .sec-c{padding:0 48px;}
+.reels-track{display:flex;gap:18px;overflow-x:auto;padding:32px 48px 8px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;}
+.reels-track::-webkit-scrollbar{height:5px;}
+.reels-track::-webkit-scrollbar-thumb{background:var(--border);}
+.reel-card{position:relative;flex:0 0 auto;width:200px;aspect-ratio:9/16;background:#000;overflow:hidden;scroll-snap-align:start;border:1px solid var(--border2);cursor:pointer;}
+.reel-card video,.reel-card iframe{width:100%;height:100%;object-fit:cover;display:block;border:0;}
+.reel-mute{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.25);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;z-index:2;}
+.reel-info{position:absolute;left:0;right:0;bottom:0;padding:14px 12px 12px;background:linear-gradient(to top,rgba(0,0,0,.88),rgba(0,0,0,0));}
+.reel-name{font-family:'Cormorant Garamond',serif;font-size:16px;color:#f2ede3;line-height:1.25;margin-bottom:8px;}
+.reel-cta{display:inline-block;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;background:linear-gradient(135deg,#c9a84c,#a07828);color:#0a0a0a;padding:7px 14px;font-weight:600;text-decoration:none;}
+.reels-empty{padding:0 48px;font-size:11px;color:var(--muted);}
+@media(max-width:768px){.reels-sec .sec-c{padding:0 20px;}.reels-track{padding:26px 20px 8px;}.reel-card{width:150px;}.reel-name{font-size:14px;}}
+
 /* SECTION */
 .sec{padding:96px 48px;}
 .sec-c{text-align:center;}
@@ -943,6 +958,7 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
 <!-- ===== FIREBASE CLOUD DATABASE (so admin panel changes show to every visitor) ===== -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyDb3N9UUR42US3AgwUKVgTVqGD_on3yBr0",
@@ -954,6 +970,7 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
     measurementId: "G-NEPG9BNGM5"
   };
   window.db = null;
+  window.storage = null;
   try{
     firebase.initializeApp(firebaseConfig);
     window.db = firebase.firestore();
@@ -961,6 +978,12 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
   }catch(e){
     console.warn('Cloud database unavailable — site will run in local-only mode', e);
     window.db = null;
+  }
+  try{
+    window.storage = firebase.storage();
+  }catch(e){
+    console.warn('Cloud storage unavailable — video uploads will not work', e);
+    window.storage = null;
   }
 
   /* ===== GENERIC CLOUD SYNC HELPERS ===================================
@@ -1208,6 +1231,7 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
           <button class="atab" onclick="switchAtab('candles',this)">Candle Showcase</button>
           <button class="atab" onclick="switchAtab('festivals',this)">Festivals</button>
           <button class="atab" onclick="switchAtab('jewelry',this)">Jewelry</button>
+          <button class="atab" onclick="switchAtab('reels',this)">Video Ads</button>
           <button class="atab" onclick="switchAtab('subscribers',this)">WhatsApp Subscribers</button>
           <button class="atab" onclick="switchAtab('social',this)">Social Media</button>
         </div>
@@ -1682,6 +1706,34 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
         </div>
         <!-- ═══ END JEWELRY TAB ═══ -->
 
+        <!-- ═══ VIDEO ADS (PRODUCT REELS) TAB ═══ -->
+        <div class="admin-section" id="at-reels">
+          <p style="font-size:9px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;font-family:'Montserrat',sans-serif;">Product Reels Manager</p>
+          <p style="font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:18px;">100% free — no paid plan needed. Upload your ~8 second product video to YouTube as <b>Unlisted</b> (ideally as a YouTube Short, so it's vertical), then paste the link here. It will autoplay muted &amp; loop in a fixed-size row between "Why Choose Us" and "Reviews" — visible to every visitor worldwide.</p>
+
+          <p class="af-label" style="font-size:11px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;">Add New Video</p>
+          <div class="af-group">
+            <label class="af-label">Video Title (shown on the card)</label>
+            <input class="af-input" id="rl-name" placeholder="e.g. Black Oud — Now Available">
+          </div>
+          <div class="af-group">
+            <label class="af-label">WhatsApp Message (sent when someone taps Order)</label>
+            <input class="af-input" id="rl-wa" placeholder="e.g. I'm interested in the Black Oud candle">
+          </div>
+          <div class="af-group">
+            <label class="af-label">YouTube Video Link (Unlisted)</label>
+            <input class="af-input" id="rl-yturl" placeholder="e.g. https://youtube.com/shorts/abc123XYZ">
+            <p style="font-size:9px;color:var(--muted);letter-spacing:1px;margin-top:6px;line-height:1.6;">1) Upload your video on YouTube (YouTube Studio → Create → Upload video) → set visibility to <b>Unlisted</b>.<br>2) Copy the video link and paste it above.<br>3) For best fit, upload as a <b>Short</b> (vertical, under 60 sec).</p>
+          </div>
+          <button class="admin-submit" onclick="rlAddNew()" id="rl-submit-btn">+ Add Video</button>
+
+          <div style="margin-top:22px;border-top:1px solid var(--border2);padding-top:18px;">
+            <p class="af-label" style="margin-bottom:12px;">Existing Videos</p>
+            <div class="ep-list" id="rl-list"></div>
+          </div>
+        </div>
+        <!-- ═══ END VIDEO ADS TAB ═══ -->
+
         <!-- ═══ WHATSAPP SUBSCRIBERS TAB ═══ -->
         <div class="admin-section" id="at-subscribers">
           <p class="af-label" style="color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;font-size:11px;">WhatsApp Subscribers</p>
@@ -1897,6 +1949,17 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
   <div class="ti rv"><div class="ti-icon"><svg viewBox="0 0 64 64"><path d="M10 46c0-14 14-18 22-34 8 16 22 20 22 34a22 22 0 01-44 0z" fill-opacity=".2"/><path d="M32 26c0 8-10 12-10 20a10 10 0 0020 0c0-8-10-12-10-20z"/></svg></div><span class="ti-label">Eco-Friendly</span></div>
   <div class="ti rv"><div class="ti-icon"><svg viewBox="0 0 64 64"><path d="M16 24l16-16 16 16-16 30z" fill-opacity=".25"/><path d="M16 24h32M22 24L32 8l10 16M32 54L22 24M32 54l10-30" fill="none" stroke="currentColor" stroke-width="2"/></svg></div><span class="ti-label">Limited Edition</span></div>
 </div>
+
+<!-- PRODUCT REELS (video ads) -->
+<section class="reels-sec" id="reelsSec">
+  <div class="sec-c rv">
+    <p class="eyebrow">✦ Watch &amp; Shop ✦</p>
+    <h2 class="sec-h">Product <em>Reels</em></h2>
+    <div class="divider"></div>
+  </div>
+  <div class="reels-track" id="reelsTrack"></div>
+  <p class="reels-empty" id="reelsEmpty" style="display:none;">More product videos coming soon.</p>
+</section>
 
 <!-- TESTIMONIALS -->
 <div class="test-sec">
@@ -2609,6 +2672,11 @@ function switchAtab(name,btn){
   if(name==='jewelry'){
     setTimeout(function(){
       if(typeof jwInit==='function') jwInit();
+    }, 60);
+  }
+  if(name==='reels'){
+    setTimeout(function(){
+      if(typeof rlInit==='function') rlInit();
     }, 60);
   }
   if(name==='candles'){
@@ -4645,6 +4713,185 @@ document.addEventListener('DOMContentLoaded', function(){
         jwNextId = Math.max.apply(null, jewelryItems.map(function(x){return x.id;})) + 1;
         jwSaveLocal();
         if(document.getElementById('at-jewelry') && document.getElementById('at-jewelry').classList.contains('active')) jwRenderList();
+      }
+    });
+  }
+});
+</script>
+
+<!-- ═══ PRODUCT REELS MANAGER (video ads via free YouTube embed — no paid plan needed) ═══ -->
+<script>
+var RL_KEY = 'iransh_reels_v1';
+var reelsItems = [];
+var rlNextId = 1;
+var rlEditingId = null;
+
+function rlLoad(){
+  try{
+    var s = localStorage.getItem(RL_KEY);
+    if(s){ var p = JSON.parse(s); if(p && p.length){ reelsItems = p; rlNextId = Math.max.apply(null, reelsItems.map(function(x){return x.id;})) + 1; return; } }
+  }catch(e){}
+  reelsItems = [];
+}
+function rlSaveLocal(){
+  try{ localStorage.setItem(RL_KEY, JSON.stringify(reelsItems)); }catch(e){}
+}
+function rlPersist(){
+  rlSaveLocal();
+  if(typeof fsSyncCollection==='function') fsSyncCollection('productReels', reelsItems, 'id');
+}
+
+/* ── Extract a YouTube video ID from any common link format ── */
+function extractYouTubeId(url){
+  if(!url) return '';
+  url = url.trim();
+  var patterns = [
+    /(?:youtube\.com\/shorts\/)([A-Za-z0-9_-]{6,})/,
+    /(?:youtu\.be\/)([A-Za-z0-9_-]{6,})/,
+    /(?:youtube\.com\/watch\?v=)([A-Za-z0-9_-]{6,})/,
+    /(?:youtube\.com\/embed\/)([A-Za-z0-9_-]{6,})/
+  ];
+  for(var i=0;i<patterns.length;i++){
+    var m = url.match(patterns[i]);
+    if(m) return m[1];
+  }
+  // If they just pasted a bare ID
+  if(/^[A-Za-z0-9_-]{6,}$/.test(url)) return url;
+  return '';
+}
+
+/* ── Add new / save edited video ── */
+function rlAddNew(){
+  var name = (document.getElementById('rl-name')||{}).value.trim();
+  var wa = (document.getElementById('rl-wa')||{}).value.trim();
+  var ytRaw = (document.getElementById('rl-yturl')||{}).value.trim();
+  var ytId = extractYouTubeId(ytRaw);
+
+  if(!name){ if(typeof toast==='function') toast('Please enter a video title'); return; }
+
+  if(rlEditingId!==null){
+    var it = reelsItems.find(function(x){ return x.id===rlEditingId; });
+    if(it){
+      it.name = name;
+      it.wa = wa || name;
+      if(ytId) it.ytId = ytId;
+    }
+    rlEditingId = null;
+    var btn = document.getElementById('rl-submit-btn'); if(btn) btn.textContent = '+ Add Video';
+    if(typeof toast==='function') toast('Video updated: '+name);
+  } else {
+    if(!ytId){ if(typeof toast==='function') toast('Please paste a valid YouTube link'); return; }
+    var item = { id: rlNextId++, name: name, wa: wa || name, ytId: ytId };
+    reelsItems.push(item);
+    if(typeof toast==='function') toast('Video added: '+name);
+  }
+
+  rlPersist();
+  rlRenderList();
+  renderReelsSection();
+
+  ['rl-name','rl-wa','rl-yturl'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+}
+
+/* ── Edit existing video ── */
+function rlEdit(id){
+  var it = reelsItems.find(function(x){ return x.id===id; });
+  if(!it) return;
+  rlEditingId = id;
+  document.getElementById('rl-name').value = it.name||'';
+  document.getElementById('rl-wa').value = it.wa||'';
+  document.getElementById('rl-yturl').value = it.ytId ? ('https://youtube.com/watch?v='+it.ytId) : '';
+  var btn = document.getElementById('rl-submit-btn'); if(btn) btn.textContent = 'Save Changes';
+  var section = document.getElementById('at-reels'); if(section) section.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+/* ── Delete video ── */
+function rlDelete(id){
+  var it = reelsItems.find(function(x){ return x.id===id; });
+  if(!it) return;
+  if(!confirm('Delete "'+it.name+'"?')) return;
+  reelsItems = reelsItems.filter(function(x){ return x.id!==id; });
+  rlPersist();
+  rlRenderList();
+  renderReelsSection();
+  if(rlEditingId===id){
+    rlEditingId = null;
+    var btn = document.getElementById('rl-submit-btn'); if(btn) btn.textContent = '+ Add Video';
+  }
+  if(typeof toast==='function') toast('Deleted: '+it.name);
+}
+
+/* ── Admin: list of existing videos (uses YouTube's own free thumbnail) ── */
+function rlRenderList(){
+  var c = document.getElementById('rl-list');
+  if(!c) return;
+  if(!reelsItems.length){ c.innerHTML = '<p style="font-size:11px;color:var(--muted);">No videos added yet.</p>'; return; }
+  c.innerHTML = reelsItems.map(function(it){
+    var thumb = it.ytId ? ('https://img.youtube.com/vi/'+it.ytId+'/hqdefault.jpg') : '';
+    return '<div class="ep-row" style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border2);">' +
+      '<div style="width:40px;height:56px;flex-shrink:0;background:var(--card2) center/cover no-repeat;'+(thumb?"background-image:url('"+thumb+"')":'')+';"></div>' +
+      '<div style="flex:1;min-width:0;">' +
+        '<div style="font-size:12px;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+it.name+'</div>' +
+      '</div>' +
+      '<button onclick="rlEdit('+it.id+')" style="background:none;border:1px solid var(--border);color:var(--gold);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:7px 12px;cursor:pointer;">Edit</button>' +
+      '<button onclick="rlDelete('+it.id+')" style="background:none;border:1px solid rgba(200,50,50,.3);color:#c44;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:7px 12px;cursor:pointer;">Delete</button>' +
+    '</div>';
+  }).join('');
+}
+
+/* ── Public init (admin tab opened) ── */
+function rlInit(){
+  rlLoad();
+  rlRenderList();
+}
+
+/* ── Homepage: render the reels row (free YouTube embeds — muted autoplay, looping) ── */
+function renderReelsSection(){
+  var track = document.getElementById('reelsTrack');
+  var empty = document.getElementById('reelsEmpty');
+  if(!track) return;
+  if(!reelsItems.length){ track.innerHTML=''; if(empty) empty.style.display='block'; return; }
+  if(empty) empty.style.display='none';
+  var origin = encodeURIComponent(window.location.origin);
+  track.innerHTML = reelsItems.map(function(it){
+    var msg = 'Hello IRANSH LUXE! ' + (it.wa || it.name);
+    var link = (typeof waLink==='function') ? waLink(msg) : ('https://wa.me/917982221656?text='+encodeURIComponent(msg));
+    var src = 'https://www.youtube.com/embed/'+it.ytId+'?autoplay=1&mute=1&loop=1&playlist='+it.ytId+'&controls=0&modestbranding=1&playsinline=1&rel=0&showinfo=0&enablejsapi=1&origin='+origin;
+    return '<div class="reel-card">' +
+      '<iframe src="'+src+'" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen data-muted="true"></iframe>' +
+      '<button class="reel-mute" onclick="event.stopPropagation();reelToggleMute(this)">&#128263;</button>' +
+      '<div class="reel-info">' +
+        '<div class="reel-name">'+it.name+'</div>' +
+        '<a class="reel-cta" target="_blank" rel="noopener" href="'+link+'">Order Now</a>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+function reelToggleMute(btn){
+  var card = btn.closest('.reel-card');
+  var iframe = card ? card.querySelector('iframe') : null;
+  if(!iframe || !iframe.contentWindow) return;
+  var isMuted = iframe.getAttribute('data-muted') !== 'false';
+  var func = isMuted ? 'unMute' : 'mute';
+  try{
+    iframe.contentWindow.postMessage(JSON.stringify({event:'command', func:func, args:[]}), '*');
+  }catch(e){}
+  iframe.setAttribute('data-muted', isMuted ? 'false' : 'true');
+  btn.innerHTML = isMuted ? '&#128266;' : '&#128263;';
+}
+
+/* ── DOMContentLoaded: render on page load + live cloud sync ── */
+document.addEventListener('DOMContentLoaded', function(){
+  rlLoad();
+  renderReelsSection();
+  if(typeof fsListenCollection==='function'){
+    fsListenCollection('productReels', function(items){
+      if(items && items.length){
+        reelsItems = items;
+        rlNextId = Math.max.apply(null, reelsItems.map(function(x){return x.id;})) + 1;
+        rlSaveLocal();
+        renderReelsSection();
+        if(document.getElementById('at-reels') && document.getElementById('at-reels').classList.contains('active')) rlRenderList();
       }
     });
   }
