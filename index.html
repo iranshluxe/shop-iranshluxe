@@ -122,7 +122,8 @@ nav{position:sticky;top:0;z-index:150;background:rgba(8,8,8,.97);border-bottom:1
 .reels-track::-webkit-scrollbar-thumb{background:var(--border);}
 .reel-card{position:relative;flex:0 0 auto;width:200px;aspect-ratio:9/16;background:#000;overflow:hidden;scroll-snap-align:start;border:1px solid var(--border2);cursor:pointer;}
 .reel-card video,.reel-card iframe{width:100%;height:100%;object-fit:cover;display:block;border:0;}
-.reel-mute{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.25);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;z-index:2;}
+.reel-mute{position:absolute;top:12px;right:12px;width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.3);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;z-index:2;}
+.reel-card.rl-loading::before{content:'';position:absolute;inset:0;background:var(--card2);z-index:1;}
 .reel-info{position:absolute;left:0;right:0;bottom:0;padding:14px 12px 12px;background:linear-gradient(to top,rgba(0,0,0,.88),rgba(0,0,0,0));}
 .reel-name{font-family:'Cormorant Garamond',serif;font-size:16px;color:#f2ede3;line-height:1.25;margin-bottom:8px;}
 .reel-cta{display:inline-block;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;background:linear-gradient(135deg,#c9a84c,#a07828);color:#0a0a0a;padding:7px 14px;font-weight:600;text-decoration:none;}
@@ -1709,23 +1710,14 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
         <!-- ═══ VIDEO ADS (PRODUCT REELS) TAB ═══ -->
         <div class="admin-section" id="at-reels">
           <p style="font-size:9px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;font-family:'Montserrat',sans-serif;">Product Reels Manager</p>
-          <p style="font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:18px;">100% free — no paid plan needed. Upload your ~8 second product video to YouTube as <b>Unlisted</b> (ideally as a YouTube Short, so it's vertical), then paste the link here. It will autoplay muted &amp; loop in a fixed-size row between "Why Choose Us" and "Reviews" — visible to every visitor worldwide.</p>
+          <p style="font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:18px;">100% free — no paid plan needed. Upload your ~8 second product videos to YouTube as <b>Unlisted</b> (ideally as YouTube Shorts, so they're vertical), then paste each link below. They'll appear on the homepage as a side-scrollable row — just like the product grid — autoplaying muted &amp; looping between "Why Choose Us" and "Reviews".</p>
 
-          <p class="af-label" style="font-size:11px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;">Add New Video</p>
-          <div class="af-group">
-            <label class="af-label">Video Title (shown on the card)</label>
-            <input class="af-input" id="rl-name" placeholder="e.g. Black Oud — Now Available">
-          </div>
-          <div class="af-group">
-            <label class="af-label">WhatsApp Message (sent when someone taps Order)</label>
-            <input class="af-input" id="rl-wa" placeholder="e.g. I'm interested in the Black Oud candle">
-          </div>
-          <div class="af-group">
-            <label class="af-label">YouTube Video Link (Unlisted)</label>
-            <input class="af-input" id="rl-yturl" placeholder="e.g. https://youtube.com/shorts/abc123XYZ">
-            <p style="font-size:9px;color:var(--muted);letter-spacing:1px;margin-top:6px;line-height:1.6;">1) Upload your video on YouTube (YouTube Studio → Create → Upload video) → set visibility to <b>Unlisted</b>.<br>2) Copy the video link and paste it above.<br>3) For best fit, upload as a <b>Short</b> (vertical, under 60 sec).</p>
-          </div>
-          <button class="admin-submit" onclick="rlAddNew()" id="rl-submit-btn">+ Add Video</button>
+          <p class="af-label" style="font-size:11px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">Add Videos</p>
+          <p style="font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:16px;line-height:1.6;">Fill in as many slots below as you like (blank ones are skipped) and hit Save — you can always add more slots or come back later for more. 1) Upload on YouTube → set to <b>Unlisted</b>. 2) Copy the link. 3) Paste below.</p>
+
+          <div id="rl-rows"></div>
+          <button type="button" onclick="rlAddRow()" style="width:100%;background:none;border:1px dashed var(--border);color:var(--gold);padding:12px;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-bottom:14px;">+ Add Another Slot</button>
+          <button class="admin-submit" onclick="rlSaveAllRows()" id="rl-submit-btn">Save All Videos</button>
 
           <div style="margin-top:22px;border-top:1px solid var(--border2);padding-top:18px;">
             <p class="af-label" style="margin-bottom:12px;">Existing Videos</p>
@@ -1933,22 +1925,9 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
       <p class="eyebrow">Our Story</p>
       <h2 class="sec-h">Born from <em>Passion</em></h2>
       <p style="font-size:13px;line-height:2.1;color:var(--muted);margin-top:16px;">IRANSH LUXE was born from a deep love for handcrafted beauty and the art of slow living. We believe every space deserves luxury — and every occasion deserves a candle that makes it unforgettable.<br><br>From delicate floral soy wax candles to richly scented aroma diffusers, every piece is hand-poured in small batches with premium ingredients, ensuring a clean burn and a scent that lingers long after the flame fades.</p>
-      <div class="astats">
-        <div class="astat"><div class="astat-icon"><svg viewBox="0 0 64 64"><path d="M32 30a10 10 0 100-20 10 10 0 000 20zM14 52c0-10 8-16 18-16s18 6 18 16" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg></div><div class="astat-txt"><div class="astat-n">15K+</div><div class="astat-l">Happy Customers</div></div></div>
-        <div class="astat"><div class="astat-icon"><svg viewBox="0 0 64 64"><path d="M32 6l6 18h19l-15 11 6 18-16-11-16 11 6-18-15-11h19z" fill="currentColor"/></svg></div><div class="astat-txt"><div class="astat-n">50+</div><div class="astat-l">Unique Designs</div></div></div>
-        <div class="astat"><div class="astat-icon"><svg viewBox="0 0 64 64"><path d="M32 8c-2 8-16 14-16 26a16 16 0 0032 0C48 22 34 16 32 8z" fill="currentColor"/></svg></div><div class="astat-txt"><div class="astat-n">100%</div><div class="astat-l">Soy Wax</div></div></div>
-      </div>
     </div>
   </div>
 </section>
-
-<!-- TRUST BAR -->
-<div class="trust-bar">
-  <div class="ti rv"><div class="ti-icon"><svg viewBox="0 0 64 64"><path d="M32 4l4.9 15H53l-12.7 9.2 4.8 14.8L32 33.8 18.9 43l4.8-14.8L11 18.9h16.1z"/></svg></div><span class="ti-label">Premium Quality</span></div>
-  <div class="ti rv"><div class="ti-icon"><svg viewBox="0 0 64 64"><path d="M32 8c-2 8-16 14-16 26a16 16 0 0032 0C48 22 34 16 32 8z" fill-opacity=".25"/><path d="M32 22c-1 5-8 9-8 14a8 8 0 0016 0c0-5-7-9-8-14z"/></svg></div><span class="ti-label">Handcrafted</span></div>
-  <div class="ti rv"><div class="ti-icon"><svg viewBox="0 0 64 64"><path d="M10 46c0-14 14-18 22-34 8 16 22 20 22 34a22 22 0 01-44 0z" fill-opacity=".2"/><path d="M32 26c0 8-10 12-10 20a10 10 0 0020 0c0-8-10-12-10-20z"/></svg></div><span class="ti-label">Eco-Friendly</span></div>
-  <div class="ti rv"><div class="ti-icon"><svg viewBox="0 0 64 64"><path d="M16 24l16-16 16 16-16 30z" fill-opacity=".25"/><path d="M16 24h32M22 24L32 8l10 16M32 54L22 24M32 54l10-30" fill="none" stroke="currentColor" stroke-width="2"/></svg></div><span class="ti-label">Limited Edition</span></div>
-</div>
 
 <!-- PRODUCT REELS (video ads) -->
 <section class="reels-sec" id="reelsSec">
@@ -1989,6 +1968,21 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
     <button type="button" class="wasub-btn" onclick="wasubSubmit()">📲 Subscribe via WhatsApp</button>
     <p class="wasub-note">No spam. Reply STOP anytime to unsubscribe.</p>
   </div>
+</div>
+
+<!-- STATS + WHY CHOOSE US (moved below WhatsApp Subscribe) -->
+<div class="about-sec" style="padding-top:0;">
+  <div class="astats" style="max-width:640px;margin:0 auto;">
+    <div class="astat"><div class="astat-icon"><svg viewBox="0 0 64 64"><path d="M32 30a10 10 0 100-20 10 10 0 000 20zM14 52c0-10 8-16 18-16s18 6 18 16" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg></div><div class="astat-txt"><div class="astat-n">15K+</div><div class="astat-l">Happy Customers</div></div></div>
+    <div class="astat"><div class="astat-icon"><svg viewBox="0 0 64 64"><path d="M32 6l6 18h19l-15 11 6 18-16-11-16 11 6-18-15-11h19z" fill="currentColor"/></svg></div><div class="astat-txt"><div class="astat-n">50+</div><div class="astat-l">Unique Designs</div></div></div>
+    <div class="astat"><div class="astat-icon"><svg viewBox="0 0 64 64"><path d="M32 8c-2 8-16 14-16 26a16 16 0 0032 0C48 22 34 16 32 8z" fill="currentColor"/></svg></div><div class="astat-txt"><div class="astat-n">100%</div><div class="astat-l">Soy Wax</div></div></div>
+  </div>
+</div>
+<div class="trust-bar" style="border-bottom:none;">
+  <div class="ti rv"><div class="ti-icon"><svg viewBox="0 0 64 64"><path d="M32 4l4.9 15H53l-12.7 9.2 4.8 14.8L32 33.8 18.9 43l4.8-14.8L11 18.9h16.1z"/></svg></div><span class="ti-label">Premium Quality</span></div>
+  <div class="ti rv"><div class="ti-icon"><svg viewBox="0 0 64 64"><path d="M32 8c-2 8-16 14-16 26a16 16 0 0032 0C48 22 34 16 32 8z" fill-opacity=".25"/><path d="M32 22c-1 5-8 9-8 14a8 8 0 0016 0c0-5-7-9-8-14z"/></svg></div><span class="ti-label">Handcrafted</span></div>
+  <div class="ti rv"><div class="ti-icon"><svg viewBox="0 0 64 64"><path d="M10 46c0-14 14-18 22-34 8 16 22 20 22 34a22 22 0 01-44 0z" fill-opacity=".2"/><path d="M32 26c0 8-10 12-10 20a10 10 0 0020 0c0-8-10-12-10-20z"/></svg></div><span class="ti-label">Eco-Friendly</span></div>
+  <div class="ti rv"><div class="ti-icon"><svg viewBox="0 0 64 64"><path d="M16 24l16-16 16 16-16 30z" fill-opacity=".25"/><path d="M16 24h32M22 24L32 8l10 16M32 54L22 24M32 54l10-30" fill="none" stroke="currentColor" stroke-width="2"/></svg></div><span class="ti-label">Limited Edition</span></div>
 </div>
 
 <!-- FOOTER -->
@@ -4723,13 +4717,12 @@ document.addEventListener('DOMContentLoaded', function(){
 <script>
 var RL_KEY = 'iransh_reels_v1';
 var reelsItems = [];
-var rlNextId = 1;
-var rlEditingId = null;
+var rlRowCount = 0;
 
 function rlLoad(){
   try{
     var s = localStorage.getItem(RL_KEY);
-    if(s){ var p = JSON.parse(s); if(p && p.length){ reelsItems = p; rlNextId = Math.max.apply(null, reelsItems.map(function(x){return x.id;})) + 1; return; } }
+    if(s){ var p = JSON.parse(s); if(p && p.length){ reelsItems = p; return; } }
   }catch(e){}
   reelsItems = [];
 }
@@ -4740,8 +4733,10 @@ function rlPersist(){
   rlSaveLocal();
   if(typeof fsSyncCollection==='function') fsSyncCollection('productReels', reelsItems, 'id');
 }
+function rlNewId(){ return 'reel_'+Date.now()+'_'+Math.random().toString(36).slice(2,7); }
+function rlEscape(s){ var d=document.createElement('div'); d.textContent = s||''; return d.innerHTML; }
 
-/* ── Extract a YouTube video ID from any common link format ── */
+/* Extract a YouTube video ID from any common link format */
 function extractYouTubeId(url){
   if(!url) return '';
   url = url.trim();
@@ -4755,57 +4750,55 @@ function extractYouTubeId(url){
     var m = url.match(patterns[i]);
     if(m) return m[1];
   }
-  // If they just pasted a bare ID
   if(/^[A-Za-z0-9_-]{6,}$/.test(url)) return url;
   return '';
 }
 
-/* ── Add new / save edited video ── */
-function rlAddNew(){
-  var name = (document.getElementById('rl-name')||{}).value.trim();
-  var wa = (document.getElementById('rl-wa')||{}).value.trim();
-  var ytRaw = (document.getElementById('rl-yturl')||{}).value.trim();
-  var ytId = extractYouTubeId(ytRaw);
-
-  if(!name){ if(typeof toast==='function') toast('Please enter a video title'); return; }
-
-  if(rlEditingId!==null){
-    var it = reelsItems.find(function(x){ return x.id===rlEditingId; });
-    if(it){
-      it.name = name;
-      it.wa = wa || name;
-      if(ytId) it.ytId = ytId;
-    }
-    rlEditingId = null;
-    var btn = document.getElementById('rl-submit-btn'); if(btn) btn.textContent = '+ Add Video';
-    if(typeof toast==='function') toast('Video updated: '+name);
-  } else {
-    if(!ytId){ if(typeof toast==='function') toast('Please paste a valid YouTube link'); return; }
-    var item = { id: rlNextId++, name: name, wa: wa || name, ytId: ytId };
-    reelsItems.push(item);
-    if(typeof toast==='function') toast('Video added: '+name);
-  }
-
+/* Multi-slot "Add Videos" form */
+function rlAddRow(){
+  rlRowCount++;
+  var wrap = document.getElementById('rl-rows');
+  if(!wrap) return;
+  var row = document.createElement('div');
+  row.className = 'rl-row';
+  row.style.cssText = 'border:1px solid var(--border2);padding:14px;margin-bottom:12px;';
+  row.innerHTML =
+    '<p style="font-size:9px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Video Slot '+rlRowCount+'</p>' +
+    '<input class="af-input" data-field="name" placeholder="Video Title (e.g. Black Oud - Now Available)" style="margin-bottom:8px;">' +
+    '<input class="af-input" data-field="wa" placeholder="WhatsApp Message (optional)" style="margin-bottom:8px;">' +
+    '<input class="af-input" data-field="yt" placeholder="YouTube Link (Unlisted) - e.g. https://youtube.com/shorts/abc123">';
+  wrap.appendChild(row);
+}
+function rlInitRows(){
+  var wrap = document.getElementById('rl-rows');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  rlRowCount = 0;
+  for(var i=0;i<5;i++) rlAddRow();
+}
+function rlSaveAllRows(){
+  var rows = document.querySelectorAll('#rl-rows .rl-row');
+  var added = 0;
+  rows.forEach(function(row){
+    var name = (row.querySelector('[data-field="name"]')||{}).value;
+    var wa = (row.querySelector('[data-field="wa"]')||{}).value;
+    var ytRaw = (row.querySelector('[data-field="yt"]')||{}).value;
+    name = name ? name.trim() : '';
+    wa = wa ? wa.trim() : '';
+    var ytId = extractYouTubeId(ytRaw ? ytRaw.trim() : '');
+    if(!name || !ytId) return;
+    reelsItems.push({ id: rlNewId(), name: name, wa: wa || name, ytId: ytId });
+    added++;
+  });
+  if(!added){ if(typeof toast==='function') toast('Fill in at least one slot (title + YouTube link)'); return; }
   rlPersist();
   rlRenderList();
   renderReelsSection();
-
-  ['rl-name','rl-wa','rl-yturl'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  rlInitRows();
+  if(typeof toast==='function') toast(added+' video'+(added>1?'s':'')+' added!');
 }
 
-/* ── Edit existing video ── */
-function rlEdit(id){
-  var it = reelsItems.find(function(x){ return x.id===id; });
-  if(!it) return;
-  rlEditingId = id;
-  document.getElementById('rl-name').value = it.name||'';
-  document.getElementById('rl-wa').value = it.wa||'';
-  document.getElementById('rl-yturl').value = it.ytId ? ('https://youtube.com/watch?v='+it.ytId) : '';
-  var btn = document.getElementById('rl-submit-btn'); if(btn) btn.textContent = 'Save Changes';
-  var section = document.getElementById('at-reels'); if(section) section.scrollIntoView({behavior:'smooth', block:'start'});
-}
-
-/* ── Delete video ── */
+/* Delete video */
 function rlDelete(id){
   var it = reelsItems.find(function(x){ return x.id===id; });
   if(!it) return;
@@ -4814,35 +4807,64 @@ function rlDelete(id){
   rlPersist();
   rlRenderList();
   renderReelsSection();
-  if(rlEditingId===id){
-    rlEditingId = null;
-    var btn = document.getElementById('rl-submit-btn'); if(btn) btn.textContent = '+ Add Video';
-  }
   if(typeof toast==='function') toast('Deleted: '+it.name);
 }
 
-/* ── Admin: list of existing videos (uses YouTube's own free thumbnail) ── */
+/* Inline edit-in-place for an existing video in the list */
+function rlEdit(id){
+  var it = reelsItems.find(function(x){ return x.id===id; });
+  if(!it) return;
+  var row = document.getElementById('rl-row-'+id);
+  if(!row) return;
+  row.innerHTML =
+    '<div style="width:100%;">' +
+      '<input class="af-input" id="rl-ed-name-'+id+'" value="'+rlEscape(it.name)+'" placeholder="Video Title" style="margin-bottom:8px;">' +
+      '<input class="af-input" id="rl-ed-wa-'+id+'" value="'+rlEscape(it.wa||'')+'" placeholder="WhatsApp Message" style="margin-bottom:8px;">' +
+      '<input class="af-input" id="rl-ed-yt-'+id+'" value="https://youtube.com/watch?v='+it.ytId+'" placeholder="YouTube Link" style="margin-bottom:10px;">' +
+      '<button onclick="rlSaveEdit(\''+id+'\')" style="background:linear-gradient(135deg,#c9a84c,#a07828);border:none;color:#0a0a0a;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:9px 16px;cursor:pointer;font-weight:600;margin-right:8px;">Save</button>' +
+      '<button onclick="rlRenderList()" style="background:none;border:1px solid var(--border);color:var(--muted);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:9px 16px;cursor:pointer;">Cancel</button>' +
+    '</div>';
+}
+function rlSaveEdit(id){
+  var it = reelsItems.find(function(x){ return x.id===id; });
+  if(!it) return;
+  var name = (document.getElementById('rl-ed-name-'+id)||{}).value;
+  var wa = (document.getElementById('rl-ed-wa-'+id)||{}).value;
+  var ytRaw = (document.getElementById('rl-ed-yt-'+id)||{}).value;
+  name = name ? name.trim() : '';
+  wa = wa ? wa.trim() : '';
+  var ytId = extractYouTubeId(ytRaw ? ytRaw.trim() : '') || it.ytId;
+  if(!name){ if(typeof toast==='function') toast('Title required'); return; }
+  it.name = name; it.wa = wa || name; it.ytId = ytId;
+  rlPersist();
+  rlRenderList();
+  renderReelsSection();
+  if(typeof toast==='function') toast('Updated: '+name);
+}
+
+/* Admin: list of existing videos (uses YouTube's own free thumbnail) */
 function rlRenderList(){
   var c = document.getElementById('rl-list');
   if(!c) return;
   if(!reelsItems.length){ c.innerHTML = '<p style="font-size:11px;color:var(--muted);">No videos added yet.</p>'; return; }
   c.innerHTML = reelsItems.map(function(it){
     var thumb = it.ytId ? ('https://img.youtube.com/vi/'+it.ytId+'/hqdefault.jpg') : '';
-    return '<div class="ep-row" style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border2);">' +
+    return '<div class="ep-row" id="rl-row-'+it.id+'" style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border2);">' +
       '<div style="width:40px;height:56px;flex-shrink:0;background:var(--card2) center/cover no-repeat;'+(thumb?"background-image:url('"+thumb+"')":'')+';"></div>' +
       '<div style="flex:1;min-width:0;">' +
-        '<div style="font-size:12px;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+it.name+'</div>' +
+        '<div style="font-size:12px;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+rlEscape(it.name)+'</div>' +
       '</div>' +
-      '<button onclick="rlEdit('+it.id+')" style="background:none;border:1px solid var(--border);color:var(--gold);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:7px 12px;cursor:pointer;">Edit</button>' +
-      '<button onclick="rlDelete('+it.id+')" style="background:none;border:1px solid rgba(200,50,50,.3);color:#c44;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:7px 12px;cursor:pointer;">Delete</button>' +
+      '<button onclick="rlEdit(\''+it.id+'\')" style="background:none;border:1px solid var(--border);color:var(--gold);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:7px 12px;cursor:pointer;">Edit</button>' +
+      '<button onclick="rlDelete(\''+it.id+'\')" style="background:none;border:1px solid rgba(200,50,50,.3);color:#c44;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:7px 12px;cursor:pointer;">Delete</button>' +
     '</div>';
   }).join('');
 }
 
-/* ── Public init (admin tab opened) ── */
+/* Public init (admin tab opened) */
 function rlInit(){
   rlLoad();
   rlRenderList();
+  if(document.getElementById('rl-rows') && !document.querySelector('#rl-rows .rl-row')) rlInitRows();
 }
 
 /* ── Homepage: render the reels row (free YouTube embeds — muted autoplay, looping) ── */
@@ -4852,13 +4874,10 @@ function renderReelsSection(){
   if(!track) return;
   if(!reelsItems.length){ track.innerHTML=''; if(empty) empty.style.display='block'; return; }
   if(empty) empty.style.display='none';
-  var origin = encodeURIComponent(window.location.origin);
   track.innerHTML = reelsItems.map(function(it){
     var msg = 'Hello IRANSH LUXE! ' + (it.wa || it.name);
     var link = (typeof waLink==='function') ? waLink(msg) : ('https://wa.me/917982221656?text='+encodeURIComponent(msg));
-    var src = 'https://www.youtube.com/embed/'+it.ytId+'?autoplay=1&mute=1&loop=1&playlist='+it.ytId+'&controls=0&modestbranding=1&playsinline=1&rel=0&showinfo=0&enablejsapi=1&origin='+origin;
-    return '<div class="reel-card">' +
-      '<iframe src="'+src+'" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen data-muted="true"></iframe>' +
+    return '<div class="reel-card rl-loading" data-ytid="'+it.ytId+'">' +
       '<button class="reel-mute" onclick="event.stopPropagation();reelToggleMute(this)">&#128263;</button>' +
       '<div class="reel-info">' +
         '<div class="reel-name">'+it.name+'</div>' +
@@ -4866,6 +4885,43 @@ function renderReelsSection(){
       '</div>' +
     '</div>';
   }).join('');
+  rlSetupLazyPlay();
+}
+
+/* Only load + autoplay each reel's video once it actually scrolls into view
+   (like Instagram/YouTube Shorts) — saves bandwidth and avoids loading every
+   video at once. Loads once and stays loaded after that. */
+function rlSetupLazyPlay(){
+  var cards = document.querySelectorAll('.reel-card[data-ytid]');
+  if(!('IntersectionObserver' in window)){
+    // Fallback: just load them all immediately
+    cards.forEach(function(card){ rlLoadCardVideo(card); });
+    return;
+  }
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        rlLoadCardVideo(entry.target);
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { root: null, threshold: 0.4 });
+  cards.forEach(function(card){ obs.observe(card); });
+}
+function rlLoadCardVideo(card){
+  var ytId = card.getAttribute('data-ytid');
+  if(!ytId || card.querySelector('iframe')) return;
+  var origin = encodeURIComponent(window.location.origin);
+  var src = 'https://www.youtube-nocookie.com/embed/'+ytId+'?autoplay=1&mute=1&loop=1&playlist='+ytId+'&controls=0&modestbranding=1&playsinline=1&rel=0&enablejsapi=1&origin='+origin;
+  var iframe = document.createElement('iframe');
+  iframe.src = src;
+  iframe.setAttribute('frameborder','0');
+  iframe.setAttribute('allow','autoplay; encrypted-media');
+  iframe.setAttribute('allowfullscreen','');
+  iframe.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
+  iframe.setAttribute('data-muted','true');
+  card.insertBefore(iframe, card.firstChild);
+  iframe.addEventListener('load', function(){ card.classList.remove('rl-loading'); });
 }
 function reelToggleMute(btn){
   var card = btn.closest('.reel-card');
@@ -4879,6 +4935,7 @@ function reelToggleMute(btn){
   iframe.setAttribute('data-muted', isMuted ? 'false' : 'true');
   btn.innerHTML = isMuted ? '&#128266;' : '&#128263;';
 }
+
 
 /* ── DOMContentLoaded: render on page load + live cloud sync ── */
 document.addEventListener('DOMContentLoaded', function(){
