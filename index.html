@@ -16,7 +16,7 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--black:#f8f1e0;--deep:#efe4cb;--card:#f2e9d3;--card2:#e8dcbd;--gold:#a8792e;--gold2:#c9973f;--gold3:#7a5a20;--cream:#000000;--pink:#e8b4b8;--white:#fff;--muted:#3a3a3a;--border:rgba(120,90,30,0.28);--border2:rgba(120,90,30,0.14);--purple-zone:#b9a1cf;}
+:root{--black:#f8f1e0;--deep:#efe4cb;--card:#f2e9d3;--card2:#e8dcbd;--gold:#a8792e;--gold2:#c9973f;--gold3:#7a5a20;--cream:#000000;--pink:#e8b4b8;--white:#000000;--muted:#3a3a3a;--border:rgba(120,90,30,0.28);--border2:rgba(120,90,30,0.14);--purple-zone:#b9a1cf;}
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{background:var(--black);color:var(--cream);font-family:'Montserrat',sans-serif;font-weight:300;overflow-x:hidden;}
@@ -121,10 +121,12 @@ nav{position:sticky;top:0;z-index:150;background:rgba(8,8,8,.97);border-bottom:1
 .reels-track::-webkit-scrollbar{height:5px;}
 .reels-track::-webkit-scrollbar-thumb{background:var(--border);}
 .reel-card{position:relative;flex:0 0 auto;width:320px;aspect-ratio:9/16;background:#000;overflow:hidden;scroll-snap-align:start;border:1px solid var(--border2);cursor:pointer;}
-.reel-card video,.reel-card iframe{width:100%;height:100%;object-fit:cover;display:block;border:0;}
-.reel-mute{position:absolute;top:16px;right:16px;width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,.65);border:2px solid rgba(255,255,255,.4);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;z-index:2;}
+.reel-card video,.reel-card iframe{width:100%;height:100%;object-fit:cover;display:block;border:0;pointer-events:none;}
+.reel-mute{position:absolute;top:16px;right:16px;width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,.65);border:2px solid rgba(255,255,255,.4);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;z-index:4;}
 .reel-card.rl-loading::before{content:'';position:absolute;inset:0;background:var(--card2);z-index:1;}
-.reel-info{position:absolute;left:0;right:0;bottom:0;padding:20px 18px 18px;background:linear-gradient(to top,rgba(0,0,0,.88),rgba(0,0,0,0));}
+.reel-clickblock{position:absolute;inset:0;z-index:3;background:transparent;cursor:pointer;}
+.reel-topmask{position:absolute;top:0;left:0;right:0;height:64px;z-index:2;background:linear-gradient(to bottom,rgba(0,0,0,.75),rgba(0,0,0,0));pointer-events:none;}
+.reel-info{position:absolute;left:0;right:0;bottom:0;padding:20px 18px 18px;background:linear-gradient(to top,rgba(0,0,0,.88),rgba(0,0,0,0));z-index:4;}
 .reel-name{font-family:'Cormorant Garamond',serif;font-size:22px;color:#f2ede3;line-height:1.25;margin-bottom:12px;}
 .reel-cta{display:inline-block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;background:linear-gradient(135deg,#c9a84c,#a07828);color:#0a0a0a;padding:10px 20px;font-weight:600;text-decoration:none;}
 .reels-empty{padding:0 48px;font-size:11px;color:var(--muted);}
@@ -1866,7 +1868,7 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
       #allProdStrip::-webkit-scrollbar{height:4px;}
       #allProdStrip::-webkit-scrollbar-track{background:#111;}
       #allProdStrip::-webkit-scrollbar-thumb{background:#c9a84c;border-radius:2px;}
-      .strip-card{flex:0 0 200px;scroll-snap-align:start;scroll-snap-stop:normal;background:#111;border:1px solid rgba(201,168,76,.18);border-radius:3px;overflow:hidden;transition:transform .3s,border-color .3s;cursor:pointer;touch-action:pan-x;user-select:none;-webkit-user-select:none;}
+      .strip-card{flex:0 0 200px;scroll-snap-align:start;scroll-snap-stop:normal;background:#111;border:1px solid rgba(201,168,76,.18);border-radius:3px;overflow:hidden;transition:transform .3s,border-color .3s;cursor:pointer;touch-action:pan-x pan-y;user-select:none;-webkit-user-select:none;}
       .strip-card:hover{transform:translateY(-4px);border-color:rgba(201,168,76,.55);}
       .strip-card .sc-img{width:100%;height:160px;object-fit:cover;display:block;background:#1a1a1a;}
       .strip-card .sc-body{padding:12px 14px;}
@@ -4717,6 +4719,7 @@ document.addEventListener('DOMContentLoaded', function(){
 var RL_KEY = 'iransh_reels_v1';
 var reelsItems = [];
 var rlRowCount = 0;
+var rlSuppressUntil = 0;
 
 function rlLoad(){
   try{
@@ -4729,6 +4732,7 @@ function rlSaveLocal(){
   try{ localStorage.setItem(RL_KEY, JSON.stringify(reelsItems)); }catch(e){}
 }
 function rlPersist(){
+  rlSuppressUntil = Date.now() + 5000; // ignore cloud echoes for 5s after our own write
   rlSaveLocal();
   if(typeof fsSyncCollection==='function') fsSyncCollection('productReels', reelsItems, 'id');
 }
@@ -4765,7 +4769,10 @@ function rlAddRow(){
     '<p style="font-size:9px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Video Slot '+rlRowCount+'</p>' +
     '<input class="af-input" data-field="name" placeholder="Video Title (e.g. Black Oud - Now Available)" style="margin-bottom:8px;">' +
     '<input class="af-input" data-field="wa" placeholder="WhatsApp Message (optional)" style="margin-bottom:8px;">' +
-    '<input class="af-input" data-field="yt" placeholder="YouTube Link (Unlisted) - e.g. https://youtube.com/shorts/abc123">';
+    '<input class="af-input" data-field="yt" placeholder="YouTube Link (Unlisted) - e.g. https://youtube.com/shorts/abc123" style="margin-bottom:10px;">' +
+    '<label style="display:flex;align-items:center;gap:8px;font-size:10px;color:var(--muted);letter-spacing:1px;cursor:pointer;">' +
+      '<input type="checkbox" data-field="cta" checked style="width:auto;">Show "Order Now" button on this video' +
+    '</label>';
   wrap.appendChild(row);
 }
 function rlInitRows(){
@@ -4782,11 +4789,13 @@ function rlSaveAllRows(){
     var name = (row.querySelector('[data-field="name"]')||{}).value;
     var wa = (row.querySelector('[data-field="wa"]')||{}).value;
     var ytRaw = (row.querySelector('[data-field="yt"]')||{}).value;
+    var ctaEl = row.querySelector('[data-field="cta"]');
+    var showOrder = ctaEl ? ctaEl.checked : true;
     name = name ? name.trim() : '';
     wa = wa ? wa.trim() : '';
     var ytId = extractYouTubeId(ytRaw ? ytRaw.trim() : '');
     if(!name || !ytId) return;
-    reelsItems.push({ id: rlNewId(), name: name, wa: wa || name, ytId: ytId });
+    reelsItems.push({ id: rlNewId(), name: name, wa: wa || name, ytId: ytId, showOrder: showOrder });
     added++;
   });
   if(!added){ if(typeof toast==='function') toast('Fill in at least one slot (title + YouTube link)'); return; }
@@ -4799,10 +4808,10 @@ function rlSaveAllRows(){
 
 /* Delete video */
 function rlDelete(id){
-  var it = reelsItems.find(function(x){ return x.id===id; });
+  var it = reelsItems.find(function(x){ return String(x.id)===String(id); });
   if(!it) return;
   if(!confirm('Delete "'+it.name+'"?')) return;
-  reelsItems = reelsItems.filter(function(x){ return x.id!==id; });
+  reelsItems = reelsItems.filter(function(x){ return String(x.id)!==String(id); });
   rlPersist();
   rlRenderList();
   renderReelsSection();
@@ -4811,30 +4820,36 @@ function rlDelete(id){
 
 /* Inline edit-in-place for an existing video in the list */
 function rlEdit(id){
-  var it = reelsItems.find(function(x){ return x.id===id; });
+  var it = reelsItems.find(function(x){ return String(x.id)===String(id); });
   if(!it) return;
   var row = document.getElementById('rl-row-'+id);
   if(!row) return;
+  var ctaChecked = it.showOrder===false ? '' : 'checked';
   row.innerHTML =
     '<div style="width:100%;">' +
       '<input class="af-input" id="rl-ed-name-'+id+'" value="'+rlEscape(it.name)+'" placeholder="Video Title" style="margin-bottom:8px;">' +
       '<input class="af-input" id="rl-ed-wa-'+id+'" value="'+rlEscape(it.wa||'')+'" placeholder="WhatsApp Message" style="margin-bottom:8px;">' +
-      '<input class="af-input" id="rl-ed-yt-'+id+'" value="https://youtube.com/watch?v='+it.ytId+'" placeholder="YouTube Link" style="margin-bottom:10px;">' +
+      '<input class="af-input" id="rl-ed-yt-'+id+'" value="https://youtube.com/watch?v='+it.ytId+'" placeholder="YouTube Link" style="margin-bottom:8px;">' +
+      '<label style="display:flex;align-items:center;gap:8px;font-size:10px;color:var(--muted);letter-spacing:1px;cursor:pointer;margin-bottom:10px;">' +
+        '<input type="checkbox" id="rl-ed-cta-'+id+'" '+ctaChecked+' style="width:auto;">Show "Order Now" button on this video' +
+      '</label>' +
       '<button onclick="rlSaveEdit(\''+id+'\')" style="background:linear-gradient(135deg,#c9a84c,#a07828);border:none;color:#0a0a0a;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:9px 16px;cursor:pointer;font-weight:600;margin-right:8px;">Save</button>' +
       '<button onclick="rlRenderList()" style="background:none;border:1px solid var(--border);color:var(--muted);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:9px 16px;cursor:pointer;">Cancel</button>' +
     '</div>';
 }
 function rlSaveEdit(id){
-  var it = reelsItems.find(function(x){ return x.id===id; });
+  var it = reelsItems.find(function(x){ return String(x.id)===String(id); });
   if(!it) return;
   var name = (document.getElementById('rl-ed-name-'+id)||{}).value;
   var wa = (document.getElementById('rl-ed-wa-'+id)||{}).value;
   var ytRaw = (document.getElementById('rl-ed-yt-'+id)||{}).value;
+  var ctaEl = document.getElementById('rl-ed-cta-'+id);
+  var showOrder = ctaEl ? ctaEl.checked : true;
   name = name ? name.trim() : '';
   wa = wa ? wa.trim() : '';
   var ytId = extractYouTubeId(ytRaw ? ytRaw.trim() : '') || it.ytId;
   if(!name){ if(typeof toast==='function') toast('Title required'); return; }
-  it.name = name; it.wa = wa || name; it.ytId = ytId;
+  it.name = name; it.wa = wa || name; it.ytId = ytId; it.showOrder = showOrder;
   rlPersist();
   rlRenderList();
   renderReelsSection();
@@ -4876,11 +4891,15 @@ function renderReelsSection(){
   track.innerHTML = reelsItems.map(function(it){
     var msg = 'Hello IRANSH LUXE! ' + (it.wa || it.name);
     var link = (typeof waLink==='function') ? waLink(msg) : ('https://wa.me/917982221656?text='+encodeURIComponent(msg));
+    var showOrder = it.showOrder !== false; // default ON unless explicitly turned off
+    var ctaHtml = showOrder ? ('<a class="reel-cta" target="_blank" rel="noopener" href="'+link+'">Order Now</a>') : '';
     return '<div class="reel-card rl-loading" data-ytid="'+it.ytId+'">' +
+      '<div class="reel-topmask"></div>' +
+      '<div class="reel-clickblock"></div>' +
       '<button class="reel-mute" onclick="event.stopPropagation();reelToggleMute(this)">&#128263;</button>' +
       '<div class="reel-info">' +
         '<div class="reel-name">'+it.name+'</div>' +
-        '<a class="reel-cta" target="_blank" rel="noopener" href="'+link+'">Order Now</a>' +
+        ctaHtml +
       '</div>' +
     '</div>';
   }).join('');
@@ -4911,7 +4930,7 @@ function rlLoadCardVideo(card){
   var ytId = card.getAttribute('data-ytid');
   if(!ytId || card.querySelector('iframe')) return;
   var origin = encodeURIComponent(window.location.origin);
-  var src = 'https://www.youtube-nocookie.com/embed/'+ytId+'?autoplay=1&mute=1&loop=1&playlist='+ytId+'&controls=0&modestbranding=1&playsinline=1&rel=0&enablejsapi=1&origin='+origin;
+  var src = 'https://www.youtube-nocookie.com/embed/'+ytId+'?autoplay=1&mute=1&loop=1&playlist='+ytId+'&controls=0&modestbranding=1&playsinline=1&rel=0&disablekb=1&iv_load_policy=3&enablejsapi=1&origin='+origin;
   var iframe = document.createElement('iframe');
   iframe.src = src;
   iframe.setAttribute('frameborder','0');
@@ -4919,6 +4938,7 @@ function rlLoadCardVideo(card){
   iframe.setAttribute('allowfullscreen','');
   iframe.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
   iframe.setAttribute('data-muted','true');
+  iframe.style.pointerEvents = 'none';
   card.insertBefore(iframe, card.firstChild);
   iframe.addEventListener('load', function(){ card.classList.remove('rl-loading'); });
 }
@@ -4942,9 +4962,9 @@ document.addEventListener('DOMContentLoaded', function(){
   renderReelsSection();
   if(typeof fsListenCollection==='function'){
     fsListenCollection('productReels', function(items){
+      if(Date.now() < rlSuppressUntil) return; // ignore stale echo right after our own edit/delete
       if(items && items.length){
         reelsItems = items;
-        rlNextId = Math.max.apply(null, reelsItems.map(function(x){return x.id;})) + 1;
         rlSaveLocal();
         renderReelsSection();
         if(document.getElementById('at-reels') && document.getElementById('at-reels').classList.contains('active')) rlRenderList();
